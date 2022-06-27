@@ -1,0 +1,470 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: >-
+  flapp-wsapi FL ChargingPoint User App WebSocket Backend
+
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
+
+Parameters:
+  ConnectionsTableName:
+    Type: String
+    Default: "WSConnections_team1"
+    Description: (Required) The name of the new DynamoDB to store connection identifiers for each connected clients. Minimum 3 characters
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z_0-9]+$
+    ConstraintDescription: "Required. Can be characters and underscore only. No numbers or special characters allowed."
+  CustomerTableName:
+    Type: String
+    Default: "FL_Customer_team1"
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z_0-9]+$
+  ChargingPointStatusTableName:
+    Type: String
+    Default: "FL_ChargingPointStatus_team1"
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z_0-9]+$
+  ChargingPointPolicyTableName:
+    Type: String
+    Default: "FL_ChargingPointPolicy_team1"
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z_0-9]+$
+  UserChargingPointsTableName:
+    Type: String
+    Default: "FL_UserChargingPoints_team1"
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z_0-9]+$
+  UserActionTableName:
+    Type: String
+    Default: "FL_UserAction_team1"
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z_0-9]+$
+
+Resources:
+  ChargingPointStatusStreamProcessor:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/chargingPointStatusHandler.chargingPointStatusHandler
+      Runtime: nodejs12.x
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt ChargingPointStatusTable.StreamArn
+            BatchSize: 100
+            StartingPosition: TRIM_HORIZON
+      Environment:
+        Variables:
+          WS_CONNECTION_TABLE: !Ref ConnectionsTableName
+          CHARGING_POINT_STATUS_TABLE: !Ref ChargingPointStatusTableName
+          WS_CONNECTION:
+            !Join [
+              "",
+              [
+                !Ref TEAM1WebSocket,
+                ".execute-api.",
+                !Ref "AWS::Region",
+                ".amazonaws.com/",
+                !Ref "Stage",
+              ],
+            ]
+      Policies:
+        - AWSLambdaDynamoDBExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConnectionsTableName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ChargingPointStatusTableName
+        - Statement:
+            - Effect: Allow
+              Action:
+                - "execute-api:ManageConnections"
+              Resource:
+                - !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${TEAM1WebSocket}/*"
+
+  ChargingPointStatusStreamPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - TEAM1WebSocket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ChargingPointStatusStreamProcessor
+      Principal: apigateway.amazonaws.com
+
+  Team1API:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      GatewayResponses:
+        DEFAULT_4xx:
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Headers: "'*'"
+              Access-Control-Allow-Origin: "'*'"
+        DEFAULT_5xx:
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Headers: "'*'"
+              Access-Control-Allow-Origin: "'*'"
+      Auth:
+        AddDefaultAuthorizerToCorsPreflight: false
+        DefaultAuthorizer: MyCognitoAuthorizer
+        Authorizers:
+          MyCognitoAuthorizer:
+            UserPoolArn: arn:aws:cognito-idp:eu-central-1:126102286400:userpool/eu-central-1_y0mzn8wk9
+
+    MyCognitoAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: MyAuthorizer
+        Type: COGNITO_USER_POOLS
+        RestApiId: !Ref Team1API
+        ProviderARNs:
+          - arn:aws:cognito-idp:eu-central-1:126102286400:userpool/eu-central-1_y0mzn8wk9
+
+  getChargeCyclesLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/get-charge-cycles.getChargeCyclesLambdaHandler
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 100
+      Description: Playground for Team 1
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ChargingPointStatusTableName
+      Environment:
+        Variables:
+          CHARGE_CYCLES_TABLE: !Ref ChargingPointStatusTableName
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /charge-cycles/
+            Method: GET
+            RestApiId: !Ref Team1API
+  #Websocket
+  TEAM1WebSocket:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: TEAM1WebSocket
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: "$request.body.action"
+  ConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref TEAM1WebSocket
+      RouteKey: $connect
+      AuthorizationType: NONE
+      OperationName: ConnectRoute
+      Target: !Join
+        - "/"
+        - - "integrations"
+          - !Ref ConnectInteg
+  ConnectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref TEAM1WebSocket
+      Description: Connect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${OnConnectFunction.Arn}/invocations
+
+  DisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref TEAM1WebSocket
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      OperationName: DisconnectRoute
+      Target: !Join
+        - "/"
+        - - "integrations"
+          - !Ref DisconnectInteg
+  DisconnectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref TEAM1WebSocket
+      Description: Disconnect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${OnDisconnectFunction.Arn}/invocations
+
+  CustomRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref TEAM1WebSocket
+      RouteKey: $default
+      AuthorizationType: NONE
+      OperationName: CustomRoute
+      Target: !Join
+        - "/"
+        - - "integrations"
+          - !Ref CustomInteg
+  CustomInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref TEAM1WebSocket
+      Description: Custom Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CustomMessageFunction.Arn}/invocations
+
+  Deployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - ConnectRoute
+      - CustomRoute
+      - DisconnectRoute
+    Properties:
+      ApiId: !Ref TEAM1WebSocket
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: Prod
+      Description: Prod Stage
+      DeploymentId: !Ref Deployment
+      ApiId: !Ref TEAM1WebSocket
+
+  # Owned tables
+  ConnectionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "connectionId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "connectionId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: True
+      TableName: !Ref ConnectionsTableName
+  # FL_Customer_A
+  CustomerTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "clientId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "clientId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: True
+      TableName: !Ref CustomerTableName
+  # FL_ChargingPointStatus_A
+  ChargingPointStatusTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "clientId"
+          AttributeType: "S"
+        - AttributeName: "id"
+          AttributeType: "N"
+      KeySchema:
+        - AttributeName: "clientId"
+          KeyType: "HASH"
+        - AttributeName: "id"
+          KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: True
+      TableName: !Ref ChargingPointStatusTableName
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+  # FL_ChargingPointPolicy_A
+  ChargingPointPolicyTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "uid"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "uid"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: True
+      TableName: !Ref ChargingPointPolicyTableName
+  # FL_UserChargingPoints_A
+  UserChargingPointsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "userId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "userId"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: True
+      TableName: !Ref UserChargingPointsTableName
+  # FL_UserChargingPoints_A
+  UserActionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: True
+      TableName: !Ref UserActionTableName
+
+  # Lambda functions
+  OnConnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/onConnect.handler
+      MemorySize: 256
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          WS_CONNECTION_TABLE: !Ref ConnectionsTableName
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConnectionsTableName
+  OnConnectPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - TEAM1WebSocket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref OnConnectFunction
+      Principal: apigateway.amazonaws.com
+
+  OnDisconnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/onDisconnect.handler
+      MemorySize: 256
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          WS_CONNECTION_TABLE: !Ref ConnectionsTableName
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConnectionsTableName
+  OnDisconnectPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - TEAM1WebSocket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref OnDisconnectFunction
+      Principal: apigateway.amazonaws.com
+
+  CustomMessageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/customMessage.handler
+      MemorySize: 256
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          WS_CONNECTION_TABLE: !Ref ConnectionsTableName
+          CUSTOMER_TABLE: !Ref CustomerTableName
+          CHARGING_POINT_STATUS_TABLE: !Ref ChargingPointStatusTableName
+          CHARGING_POINT_POLICY_TABLE: !Ref ChargingPointPolicyTableName
+          USER_CHARGING_POINT_TABLE: !Ref UserChargingPointsTableName
+          USER_ACTION_TABLE: !Ref UserActionTableName
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConnectionsTableName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CustomerTableName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ChargingPointStatusTableName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ChargingPointPolicyTableName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserChargingPointsTableName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserActionTableName
+        - Statement:
+            - Effect: Allow
+              Action:
+                - "execute-api:ManageConnections"
+              Resource:
+                - !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${TEAM1WebSocket}/*"
+  CustomMessagePermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - TEAM1WebSocket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref CustomMessageFunction
+      Principal: apigateway.amazonaws.com
+
+Outputs:
+  WebEndpoint:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value:
+      !Join [
+        "",
+        [
+          "https://",
+          !Ref Team1API,
+          ".execute-api.",
+          !Ref "AWS::Region",
+          ".amazonaws.com/",
+          !Ref "Stage",
+        ],
+      ]
+  ConnectionsTableArn:
+    Description: "Connections table ARN"
+    Value: !GetAtt ConnectionsTable.Arn
+
+  OnConnectFunctionArn:
+    Description: "OnConnect function ARN"
+    Value: !GetAtt OnConnectFunction.Arn
+
+  OnDisconnectFunctionArn:
+    Description: "OnDisconnect function ARN"
+    Value: !GetAtt OnDisconnectFunction.Arn
+
+  CustomMessageFunctionArn:
+    Description: "CustomMessage function ARN"
+    Value: !GetAtt CustomMessageFunction.Arn
+
+  WebSocketURI:
+    Description: "The WSS Protocol URI to connect to"
+    Value:
+      !Join [
+        "",
+        [
+          "wss://",
+          !Ref TEAM1WebSocket,
+          ".execute-api.",
+          !Ref "AWS::Region",
+          ".amazonaws.com/",
+          !Ref "Stage",
+        ],
+      ]

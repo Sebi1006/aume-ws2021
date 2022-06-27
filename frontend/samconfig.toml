@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "Team1-PWA"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-sz1luk1tx5vq"
+s3_prefix = "Team1-PWA"
+region = "eu-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "PWARoot=\"index.html\" ErrorPagePath=\"/index.html\""

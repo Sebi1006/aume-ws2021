@@ -1,0 +1,109 @@
+{
+    "dashboard": {
+        "powerconsumption": {
+            "title": "Energieverbrauch"
+        },
+        "powerprice": {
+            "title": "Strompreis"
+        },
+        "chargingstatus": {
+            "title": "Ladestatus",
+            "charging": "Auto lädt.",
+            "chargingcompleted": "Auto ist aufgeladen.",
+            "notcharging": "Fehler: Auto lädt nicht.",
+            "connected": "Auto ist angesteckt.",
+            "available": "Ladestation ist verfügbar.",
+            "cancelcharging": "Ladevorgang abbrechen",
+            "startcharging": "Ladevorgang starten",
+            "canceledmsg": "Der Ladevorgang wurde abgebrochen!",
+            "startedmsg": "Der Ladevorgang wurde gestartet!"
+        },
+        "chargingmode": {
+            "title": "Lademodus",
+            "mode": [
+                "Langsames Laden",
+                "Schnelles Laden"
+            ]
+        },
+        "chargingInfo": {
+            "rangestartemsg": "Es wurden",
+            "rangemidmsg": "mit",
+            "rangeendmsg": "km an Reichweite geladen."
+        },
+        "treealert": {
+          "msg1": "Du hast bisher ",
+          "msg2": " Tonnen Treibhausgase vermieden."
+        }
+    },
+    "page": {
+        "history": {
+            "tabs": [
+                "Tagesansicht",
+                "Wochenansicht",
+                "Monatsansicht",
+                "Jahresansicht"
+            ]
+        },
+        "profile": {
+          "carConfiguration": {
+            "title": "Bitte wählen Sie Ihr E-Auto aus:",
+            "cancel": "Abbrechen",
+            "button": "E-Auto wählen",
+            "model": "Modell",
+            "seats": "Sitze",
+            "edition": "Edition",
+            "power": "Leistung",
+            "acceleration": "Beschleunigung",
+            "topSpeed": "Höchstgeschwindigkeit",
+            "weight": "Gewicht",
+            "rangebest": "Optimale Batterie-Reichweite",
+            "rangeworst": "Schlechteste Batterie-Reichweite"
+          }
+        },
+        "settings": {
+            "langselect": {
+                "title": "Sprache"
+            },
+            "backgroundSync": {
+                "title": "Benachrichtigung im Hintergrund",
+                "active": "Ja",
+                "inactive": "Nein"
+            },
+            "chargingAuthorization": {
+                "title": "Freigabe des Ladevorgangs",
+                "automatic": "Automatisch",
+                "manual": "Manuell",
+                "automaticmsg": "Der Ladevorgang startet nun automatisch, wenn das Auto angesteckt ist.",
+                "manualmsg": "Achtung! Im manuellen Modus muss jeder Ladevorgang in der App freigegeben werden, bevor das Auto lädt."
+            }
+        },
+        "config": {
+          "releaseFrom": "Freigeben von",
+          "releaseFromError": "Zeit muss vor der Endzeit liegen",
+          "releaseToError": "Zeit muss nach der Startzeit liegen",
+          "releaseTo": "Freigeben bis",
+          "infoDialog": "Wenn du die Ladestation für andere User freigibst, können andere Autos an deiner Ladestation zu den angegebenen Zeiten geladen werden. Als Dankeschön für deine Hilfsbereitschaft, erlassen wir deine Ladekosten, wenn du deine Ladestation für andere öffnest.",
+          "resetDialog": "Wenn du fortfährst, werden alle deine bestehenden Freigaben zurückgesetzt. Andere Nutzer können ihr Auto dann nicht mehr an deiner Ladestation laden.",
+          "saveDialog": "Wenn du diese Zeiten speicherst, können andere Benutzer zu den angegeben Zeiten an deiner Ladestation laden. Ladestation freigeben?",
+          "abort": "Abbrechen",
+          "saveDialogAgree": "Ladestation freigeben",
+          "resetDialogAgree": "Freigaben zurücksetzen",
+          "reset": "Zurücksetzen",
+          "save": "Speichern",
+          "info": "Ladestation für andere Benutzer freigeben"
+        }
+    },
+    "navbar": {
+        "dashboard": "Übersicht",
+        "history": "Verlauf",
+        "profil": "Benutzer",
+        "config": "Station freigeben",
+        "settings": "Einstellungen",
+        "installpwa": "App installieren"
+    },
+  "signin": {
+    "email": "E-Mail Adresse",
+    "password": "Passwort",
+    "signin": "Anmelden"
+  }
+}

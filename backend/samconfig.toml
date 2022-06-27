@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "playground-team1"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-sz1luk1tx5vq"
+s3_prefix = "playground-team1"
+region = "eu-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"

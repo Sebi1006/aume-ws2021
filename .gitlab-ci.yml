@@ -1,0 +1,39 @@
+variables:
+  S3_BUCKET_NAME: "team1-pwa-team1pwa-1vk8lfge7e7sv"
+
+stages:
+  - build
+  - deploy
+
+cache:
+  paths:
+    - frontend/node_modules/
+
+build_frontend:
+  stage: build
+  image: node:latest
+  script:
+    - cd frontend
+    - yarn install
+    - yarn build
+    - yarn test
+    - cd ..
+  artifacts:
+    paths:
+      - frontend/build
+    expire_in: 2 days
+# test_backend:
+#   stage: build
+#   image: node:latest
+#   script:
+#     - cd backend
+#     - yarn install
+deploy:
+  stage: deploy
+  image: python:latest
+  script:
+    - pip install awscli
+    - aws s3 sync frontend/build s3://$S3_BUCKET_NAME --acl public-read
+  only:
+    - master
+    - dev

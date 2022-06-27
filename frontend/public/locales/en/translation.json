@@ -1,0 +1,109 @@
+{
+    "dashboard": {
+        "powerconsumption": {
+            "title": "Power Consumption"
+        },
+        "powerprice": {
+            "title": "Power Price"
+        },
+        "chargingstatus": {
+            "title": "Charging Status",
+            "charging": "Car is charging.",
+            "chargingcompleted": "Car is full.",
+            "notcharging": "Error: Car is not charging.",
+            "connected": "Car is connected.",
+            "available": "Charging station is available.",
+            "cancelcharging": "Cancel charging",
+            "startcharging": "Start charging",
+            "canceledmsg": "Charging has been canceled!",
+            "startedmsg": "Charging has been started!"
+        },
+        "chargingmode": {
+            "title": "Charging mode",
+            "mode": [
+                "Slow Charging",
+                "Fast Charging"
+            ]
+        },
+        "chargingInfo": {
+            "rangestartemsg": "It was charged",
+            "rangemidmsg": "with",
+            "rangeendmsg": "km as range."
+        },
+        "treealert": {
+          "msg1": "So far, you have avoided ",
+          "msg2": " tons of greenhouse gases."
+        }
+    },
+    "page": {
+        "history": {
+            "tabs": [
+                "Day View",
+                "Week View",
+                "Month View",
+                "Year View"
+            ]
+        },
+        "profile": {
+          "carConfiguration": {
+            "title": "Please select your electric car:",
+            "cancel": "Cancel",
+            "button": "Select e-car",
+            "model": "Model",
+            "seats": "Seats",
+            "edition": "Edition",
+            "power": "Power",
+            "acceleration": "Acceleration",
+            "topSpeed": "Maximum speed",
+            "weight": "Weight ",
+            "rangebest": "Battery range (best)",
+            "rangeworst": "Battery range (worst)"
+          }
+        },
+        "settings": {
+            "langselect": {
+                "title": "Language"
+            },
+            "backgroundSync": {
+                "title": "Background Notification",
+                "active": "Yes",
+                "inactive": "No"
+            },
+            "chargingAuthorization": {
+                "title": "Charging Release",
+                "automatic": "Automatic",
+                "manual": "Manual",
+                "automaticmsg": "The charging process now starts automatically when the car is plugged in.",
+                "manualmsg": "Attention! In manual mode, every charging process must be approved in the app before the car charges."
+            }
+        },
+        "config": {
+          "releaseFrom": "Release from",
+          "releaseFromError": "Time must be before the end time",
+          "releaseToError": "Time must be after the start time",
+          "releaseTo": "Release to",
+          "infoDialog": "If you share the charging station with other users, other cars can be charged at your charging station at the specified times. As a thank you for your willingness to help, we waive your charging costs if you open your charging station to others.",
+          "resetDialog": "If you continue, all of your existing shares will be reset. Other users can then no longer charge their car at your charging station.",
+          "saveDialog": "If you save these times, other users can charge at your charging station at the specified times. Release charging station?",
+          "abort": "Abort",
+          "saveDialogAgree": "Release charging station",
+          "resetDialogAgree": "Reset releases",
+          "reset": "Reset",
+          "save": "Save",
+          "info": "Share the charging station with other users"
+        }
+    },
+    "navbar": {
+        "dashboard": "Dashboard",
+        "history": "History",
+        "profil": "Profile",
+        "config": "Release station",
+        "settings": "Settings",
+        "installpwa": "Install App"
+    },
+  "signin": {
+    "email": "Email address",
+    "password": "Password",
+    "signin": "Log in"
+  }
+}

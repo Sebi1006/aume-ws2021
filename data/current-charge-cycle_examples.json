@@ -1,0 +1,48 @@
+[
+  {
+    "id": "not-yet-started",
+    "status": "CONNECTED",
+    "chargingPoint": 1,
+    "started": "2020-10-23T08:09:30.056Z",
+    "ended": null,
+    "chargedWork": {
+      "v": 0,
+      "uom": "kWh"
+    },
+    "power": {
+      "v": 0,
+      "uom": "kW"
+    }
+  },
+  {
+    "id": "charging",
+    "status": "CHARGING",
+    "chargingPoint": 1,
+    "started": "2020-10-23T08:09:30.056Z",
+    "ended": null,
+    "chargedWork": {
+      "v": 0.5,
+      "uom": "kWh"
+    },
+    "power": {
+      "v": 11.0,
+      "uom": "kW"
+    }
+  },
+  {
+    "id": "charging_completed",
+    "status": "CHARGING_COMPLETED",
+    "chargingPoint": 1,
+    "started": "2020-10-23T08:09:30.056Z",
+    "ended": "2020-10-23T12:09:30.056Z",
+    "chargedWork": {
+      "v": 30.5,
+      "uom": "kWh"
+    },
+    "power": {
+      "v": 0.0,
+      "uom": "kW"
+    }
+  }
+]
+

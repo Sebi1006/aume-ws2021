@@ -1,0 +1,146 @@
+{
+  "charge-cycles": [
+    {
+      "id": "f209490a-1838-11eb-adc1-0242ac120002",
+      "status": "CHARGING_COMPLETED",
+      "chargingPoint": 1,
+      "started": "2020-10-23T08:09:30.056Z",
+      "ended": "2020-10-23T12:09:30.056Z",
+      "chargedWork": {
+        "v": 30.5,
+        "uom": "kWh"
+      },
+      "power": {
+        "v": 0.0,
+        "uom": "kW"
+      }
+    },
+    {
+      "id": "f209490a-1838-11eb-adc1-0242ac110002",
+      "status": "CHARGING_COMPLETED",
+      "chargingPoint": 1,
+      "started": "2020-10-22T08:09:30.056Z",
+      "ended": "2020-10-22T12:09:30.056Z",
+      "chargedWork": {
+        "v": 30.5,
+        "uom": "kWh"
+      },
+      "power": {
+        "v": 0.0,
+        "uom": "kW"
+      }
+    },
+    {
+      "id": "f209490a-1838-11eb-adc1-0242ac100002",
+      "status": "CHARGING_COMPLETED",
+      "chargingPoint": 1,
+      "started": "2020-10-21T08:09:30.056Z",
+      "ended": "2020-10-21T16:09:30.056Z",
+      "chargedWork": {
+        "v": 11.5,
+        "uom": "kWh"
+      },
+      "power": {
+        "v": 0.0,
+        "uom": "kW"
+      }
+    }
+  ],
+  "current-charge-cycle": {
+    "id": "f209490a-1838-11eb-adc1-0242ac120002",
+    "status": "CHARGING",
+    "chargingPoint": 1,
+    "started": "2020-10-23T08:09:30.056Z",
+    "ended": null,
+    "chargedWork": {
+      "v": 23.5,
+      "uom": "kWh"
+    },
+    "power": {
+      "v": 7.2,
+      "uom": "kW"
+    }
+  },
+
+  "chargingStatus": [
+    {
+      "lastActivated": "2020-12-01T13:11:56.862",
+      "id": 1,
+      "status": "AVAILABLE",
+      "started": "2020-12-01T13:11:56.862",
+      "ended": null,
+      "chargedWork": {
+        "v": 30.5,
+        "uom": "kWh"
+      },
+      "power": {
+        "v": 0.0,
+        "uom": "kW"
+      }
+    },
+    {
+      "lastActivated": "2020-12-01T13:11:56.862",
+      "id": 1,
+      "status": "CHARGING",
+      "started": "2020-12-01T13:11:56.862",
+      "ended": null,
+      "chargedWork": {
+        "v": 30.5,
+        "uom": "kWh"
+      },
+      "power": {
+        "v": 0.0,
+        "uom": "kW"
+      }
+    },
+    {
+      "lastActivated": "2020-12-01T13:11:56.862",
+      "id": 1,
+      "status": "FAULTY",
+      "started": "2020-12-01T13:11:56.862",
+      "ended": null,
+      "chargedWork": {
+        "v": 30.5,
+        "uom": "kWh"
+      },
+      "power": {
+        "v": 0.0,
+        "uom": "kW"
+      }
+    },
+    {
+      "lastActivated": "2020-12-01T13:11:56.862",
+      "id": 1,
+      "status": "CONNECTED",
+      "started": "2020-12-01T13:11:56.862",
+      "ended": null,
+      "chargedWork": {
+        "v": 30.5,
+        "uom": "kWh"
+      },
+      "power": {
+        "v": 0.0,
+        "uom": "kW"
+      }
+    },
+    {
+      "lastActivated": "2020-12-01T13:11:56.862",
+      "id": 1,
+      "status": "CHARGING_COMPLETED",
+      "started": "2020-12-01T13:11:56.862",
+      "ended": "2020-10-23T12:09:30.056Z",
+      "chargedWork": {
+        "v": 30.5,
+        "uom": "kWh"
+      },
+      "power": {
+        "v": 0.0,
+        "uom": "kW"
+      }
+    }
+  ],
+    "profile": {
+      "name": "Hans Meier",
+      "chargingPoint": 42
+    }
+}

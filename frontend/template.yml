@@ -1,0 +1,117 @@
+# From Here https://github.com/forestryio/cloudformation-templates/blob/35179ceaa0d0b12a5e4560fe69f774adcca6f875/static-site-hosting/basic-s3-cloudfront.yml
+# Copyright 2018 widdix GmbH
+#
+# Modifications Copyright 2018 Forestry.io
+#
+# Modifications 2021 Team 1 AUME 2021
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Static PWA"
+Parameters:
+  PWARoot:
+    Description: "The default path for the index document."
+    Type: String
+    Default: "index.html"
+  ErrorPagePath:
+    Description: "The path of the error page for the website."
+    Type: String
+    Default: "/index.html"
+Resources:
+  Team1PWA:
+    Type: "AWS::S3::Bucket"
+  ReadPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket: !Ref Team1PWA
+      PolicyDocument:
+        Statement:
+          - Action: "s3:GetObject"
+            Effect: Allow
+            Resource: !Sub "arn:aws:s3:::${Team1PWA}/*"
+            Principal:
+              CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+  CloudFrontOriginAccessIdentity:
+    Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Ref Team1PWA
+  CloudFrontDistribution:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: !Ref ErrorPagePath
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          Compress: true
+          DefaultTTL: 3600
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: false
+          MaxTTL: 86400
+          MinTTL: 60
+          TargetOriginId: team1pwas3
+          ViewerProtocolPolicy: "redirect-to-https"
+        DefaultRootObject: ""
+        Enabled: true
+        HttpVersion: http2
+        Origins:
+          - DomainName: !GetAtt "Team1PWA.DomainName"
+            Id: team1pwas3
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
+        PriceClass: "PriceClass_All"
+
+  Team1Publisher:
+    Type: "AWS::IAM::User"
+    Properties:
+      Policies:
+        - PolicyName: !Sub "publish-to-${Team1PWA}"
+          PolicyDocument:
+            Statement:
+              - Action: "s3:*"
+                Effect: Allow
+                Resource:
+                  - !Sub "arn:aws:s3:::${Team1PWA}"
+                  - !Sub "arn:aws:s3:::${Team1PWA}/*"
+  PublishCredentials:
+    Type: "AWS::IAM::AccessKey"
+    Properties:
+      UserName: !Ref Team1Publisher
+Outputs:
+  BucketName:
+    Description: "S3 Bucket Name"
+    Value: !Ref Team1PWA
+  AccessKeyId:
+    Description: "S3 Access Key"
+    Value: !Ref PublishCredentials
+  AccessKeySecret:
+    Description: "S3 Secret Key"
+    Value: !GetAtt PublishCredentials.SecretAccessKey
+  DistributionId:
+    Description: "CloudFront Distribution ID"
+    Value: !Ref CloudFrontDistribution
+  Domain:
+    Description: "Cloudfront Domain"
+    Value: !GetAtt CloudFrontDistribution.DomainName

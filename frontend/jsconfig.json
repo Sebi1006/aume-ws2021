@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": [
+    "src"
+  ],
+  "files": [
+    "public/push-message-worker.js"
+  ]
+}
