@@ -4,7 +4,7 @@ This is the seed project to get started with FLApp app development.
 
 ## FLApp API docs
 
-See [FLApp API Notes](./FLApp API.md)
+See [FLApp API Notes](./FLApp_API.md)
 
 ## Frontend
 

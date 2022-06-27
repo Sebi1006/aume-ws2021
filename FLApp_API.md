@@ -12,7 +12,7 @@ Query always for a specific charge point.
 - Statistics:
   - All charges per month
 
-## Technical:
+## Technical
 
 The FLApp API is defined as a REST API.
 
