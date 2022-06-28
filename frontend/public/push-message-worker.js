@@ -6,15 +6,15 @@ let errorMessage = false
 let jwt
 let chargingPoint
 
-// Modes for WebSocket reconnecting time.
+// Modes for WebSocket reconnecting time
 const MODE1 = 5000 // 5 seconds
 const MODE2 = 30000 // 30 seconds
 const MODE3 = 120000 // 2 minutes
 
-// Error warning for lost connection over WebSocket.
-const connectionLostMessage = { status: 'Fehler', message: 'Verbindung zum Server verloren.' }
+// Error warning for lost connection over WebSocket
+const connectionLostMessage = { status: 'Error', message: 'Lost connection to the server.' }
 
-// Bidirectional channel for communication with the client (react) over the id 'settings-channel'.
+// Bidirectional channel for communication with the client over the id 'settings-channel'
 const clientCom = new BroadcastChannel('settings-channel')
 
 self.addEventListener('install', (event) => {
@@ -52,51 +52,38 @@ self.addEventListener('fetch', (event) => {
   )
 })
 
-/**
- * Push notificaton date formatting
- * @param {Date} input: Date
- */
 function dateFormat (input) {
   const date = new Date(input)
   let minutes = date.getMinutes()
   minutes = minutes < 10 ? `0${minutes}` : minutes
-  return `${date.getHours()}:${minutes} Uhr`
+  return `${date.getHours()}:${minutes} o'clock.`
 }
 
-/**
- * Message formatter for `CHARGING_COMPLETED` notification.
- * @param {Notification} payload: object
- */
 function chargingCompletedMessage (payload) {
   const { v, uom } = payload.chargedWork
   const date = dateFormat(payload.ended)
-  return `Es wurde ${v} ${uom} bis ${date} geladen.`
+  return `It was loaded ${v} ${uom} until ${date}.`
 }
 
-/**
- * Triggers push notifications for users.
- * Formatting notifications based on conntent.
- * @param {notification} input: object
- */
 async function setNotification (input) {
   try {
     const payload = JSON.parse(input)
     if (payload && payload.chargingStatus) {
       switch (payload.chargingStatus.status) {
         case 'CHARGING':
-          self.registration.showNotification('Fahrzeug lädt.', { body: dateFormat(payload.chargingStatus.started) })
+          self.registration.showNotification('Vehicle charges.', { body: dateFormat(payload.chargingStatus.started) })
           break
         case 'CONNECTED':
-          self.registration.showNotification('Fahrzeug angeschlossen.', { body: dateFormat(payload.chargingStatus.lastActivated) })
+          self.registration.showNotification('Vehicle connected.', { body: dateFormat(payload.chargingStatus.lastActivated) })
           break
         case 'FAULTY':
-          self.registration.showNotification('Fehler erkannt.', { body: dateFormat(payload.chargingStatus.lastActivated) })
+          self.registration.showNotification('Error detected.', { body: dateFormat(payload.chargingStatus.lastActivated) })
           break
         case 'CHARGING_COMPLETED':
-          self.registration.showNotification('Laden beendet.', { body: chargingCompletedMessage(payload.chargingStatus) })
+          self.registration.showNotification('Charging finished.', { body: chargingCompletedMessage(payload.chargingStatus) })
           break
         default:
-          console.log(`SW: Unknown Message ${payload}`)
+          console.log(`SW: Unknown Message ${payload}.`)
       }
     }
     if (payload && payload.status) {
@@ -104,38 +91,25 @@ async function setNotification (input) {
         { body: payload.message })
     }
   } catch (e) {
-    console.log(`SW: Invalid message = ${e}`)
+    console.log(`SW: Invalid message ${e}.`)
   }
 }
 
-/**
- * Backend WebSocket connection function.
- * On Error: tries to reconnect in diffrent mode.
- * @param {Recursive counter} connectionCounter: number
- */
 async function connectWS (connectionCounter = 0) {
   if (isActiveSnyc === true && jwt) {
-    console.log('SW: Websocket Connecting.')
-
+    console.log('SW: WebSocket connecting.')
     wsBackend = new WebSocket(`${wsConnectionURL}?access_token=${jwt}`)
 
-    // if (wsBackend.readyState === 1) {
-    //   const sendAction = { action: 'subscribe', chargingPoint };
-    //   wsBackend.send(sendAction);
-    // }
     wsBackend.onopen = () => {
-      console.log('Open')
-      // const sendAction = { action: 'subscribe', chargingPoint };
+      console.log('SW: WebSocket is open now.')
       wsBackend.send(`{"action":"subscribe","chargingPoint":"${chargingPoint}"}`)
     }
 
-    // Event listener for WS incoming messages.
     wsBackend.onmessage = (m) => {
       errorMessage = false
       setNotification(m.data)
     }
 
-    // Event listener when WS  is closed. Tries to reconnect if background sync is activated.
     wsBackend.onclose = () => {
       console.log('SW: WebSocket is closed now.')
       if (isActiveSnyc === true) {
@@ -155,22 +129,16 @@ async function connectWS (connectionCounter = 0) {
       }
     }
 
-    // Event listener when erros in SW occurs.
     wsBackend.onerror = () => {
-      console.log('SW: WebSocket has a error.')
+      console.log('SW: WebSocket has an error.')
     }
   } else if (wsBackend) {
     wsBackend.close()
     wsBackend = null
-    console.log('SW: Websocket disconnected.')
+    console.log('SW: WebSocket disconnected.')
   }
 }
 
-/**
- * This function receives messages sends from the clients and.
- * processes the requests based on the action description in the sent message.
- * @param {Event} event: Event
- */
 async function handleClientCall (event) {
   if (event.data && event.data.action === 'backgroundSync') {
     wsConnectionURL = event.data.url
@@ -191,7 +159,7 @@ self.addEventListener('message', (event) => {
   handleClientCall(event)
 })
 
-// Receives messages from clients over the `BroadcastChannel`.
+// Receives messages from clients over the BroadcastChannel
 clientCom.onmessage = (event) => {
   handleClientCall(event)
 }

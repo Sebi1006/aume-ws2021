@@ -1,5 +1,4 @@
 const axios = require('axios')
-
 const AWS = require('aws-sdk');
 const jwt_decode = require('jwt-decode')
 const jsonwebtoken = require('jsonwebtoken')
@@ -20,27 +19,29 @@ const validateToken = async (jwt) => {
         statusCode: 401,
         body: "Unauthorized"
     }
+
     try {
         decodedHeader = jwt_decode(jwt, {header: true})
         decodedPayload = jwt_decode(jwt)
     } catch (e) {
         return response
     }
+
     const kid = decodedHeader.kid
     const publicKeys = await getPublicKeys(decodedPayload.iss)
     const jwk = publicKeys.filter(x => x.kid === kid)[0]
     const pem = jwkToPem(jwk)
+
     jsonwebtoken.verify(jwt, pem, {algorithms: [decodedHeader.alg]}, (err, decodedToken) => {
         if (decodedToken) response = {
             statusCode: 200,
             body: "Connected."
         }
     })
+
     return response
 }
-/**
- * WS onConnect. code initially taken from https://github.com/aws-samples/simple-websockets-chat-app/tree/master/onconnect
- */
+
 exports.handler = async event => {
     const putParams = {
         TableName: process.env.WS_CONNECTION_TABLE,
@@ -49,8 +50,10 @@ exports.handler = async event => {
             uid: null
         }
     };
+
     const {access_token} = event.queryStringParameters;
     const response = validateToken(access_token);
+
     if (response.statusCode === 200) {
         try {
             await ddb.put(putParams).promise();
@@ -58,5 +61,6 @@ exports.handler = async event => {
             return {statusCode: 500, body: 'Failed to connect: ' + JSON.stringify(err)};
         }
     }
+
     return response;
 };

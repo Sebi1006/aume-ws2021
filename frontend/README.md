@@ -26,19 +26,22 @@
 
 ## Powerful Routing API for Electric Cars
 
-The Chargetrip API is based on a GraphQL structure. GraphQL is a query language for your API and a server-side runtime for executing queries by using a type system you define for your data. We use this API to get the information about the electric cars a user can choose in the profile page.
+The Chargetrip API is based on a GraphQL structure. GraphQL is a query language for your API and a server-side runtime for executing queries by using a type system you define for your data. We use
+this API to get the information about the electric cars a user can choose in the profile page.
 
 [More information about the API](https://docs.chargetrip.com/#introduction)
 
 The API is reached under the following web address: https://api.chargetrip.io/graphql
 
-Authorisation is done by setting an x-client-id as a HTTP header. Once you have an x-client-id from your account manager, you can start using the full API. For our case we used the following test key: `"x-client-id": "5e8c22366f9c5f23ab0eff39"`
+Authorisation is done by setting an x-client-id as a HTTP header. Once you have an x-client-id from your account manager, you can start using the full API. For our case we used the following test
+key: `"x-client-id": "5e8c22366f9c5f23ab0eff39"`
 
 ## Learn before you start
 
 ### Material Design
 
-A Google material design framework. Rules and guidelines to design user-friendly, mature and mobile-first apps. We strongly recommend reading and understanding these design guidelines before designing the user interface.
+A Google material design framework. Rules and guidelines to design user-friendly, mature and mobile-first apps. We strongly recommend reading and understanding these design guidelines before designing
+the user interface.
 
 - https://www.material.io
 
@@ -83,15 +86,7 @@ You can run the json-server by calling `npm run apiMock`. The data is in `../dat
 - `src/pages`: each page is a main navigation area
 - `src/components`: general, reusable components
 - `src/routes.js`: states the URL routes within the application
-- `src/layouts/NavBar/index.js`: states the navigation "burger menu" items
-
-### Examples
-
-There are some example pages (just for demonstration purposes).
-
-- `pages/dashboard`: example page showing some layout and widgets
-- `pages/dashboard/LatestCycles.js`: example page showing how to access the backend
-- `pages/profile`: example page on how to have a second menu item
+- `src/layouts/mainLayout/navBar/index.js`: states the navigation "burger menu" items
 
 ### Structure
 
@@ -104,18 +99,21 @@ react-seed-project
 ├── package.json
 ├── README.md
 ├── public
-├── docs
 └── src
 	├── apiClient
 	├── components
-	├── mixins
 	├── layouts
-	├── theme
+	├── login
+	├── mixins
+	├── mocks
 	├── pages
 	│	├── dashboard
 	│	├── errors
-	│	│   └── NotFoundPage.js
-	├── App.js
+	│	│	└── notFoundPage.js
+	├── theme
+	├── utils
+	├── webSocket
+	├── app.js
 	├── index.js
 	└── routes.js
 ```

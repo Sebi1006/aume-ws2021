@@ -1,21 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Container, makeStyles } from '@material-ui/core'
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import AccessTimeIcon from '@material-ui/icons/AccessTime'
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
 import moment from 'moment'
-import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers'
 import MomentUtils from '@date-io/moment'
 import { withTranslation } from 'react-i18next'
-import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
-import Page from '../../components/Page'
-import ConfigResetDialog from './dialogs/ConfigResetDialog'
-import ConfigSaveDialog from './dialogs/ConfigSaveDialog'
-import ConfigInfoDialog from './dialogs/ConfigInfoDialog'
+import Page from '../../components/page'
+import ConfigResetDialog from './dialogs/configResetDialog'
+import ConfigSaveDialog from './dialogs/configSaveDialog'
+import ConfigInfoDialog from './dialogs/configInfoDialog'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,45 +29,52 @@ const useStyles = makeStyles((theme) => ({
 const Config = ({ t }) => {
   moment.locale(localStorage.getItem('i18nextLng'))
   const classes = useStyles()
-  const [selectedFromTime, setSelectedFromTime] = React.useState(null);
-  const [selectedToTime, setSelectedToTime] = React.useState(null);
-  const [openInfo, setOpenInfo] = React.useState(false);
-  const [openReset, setOpenReset] = React.useState(false);
-  const [openSave, setOpenSave] = React.useState(false);
-  const [formats, setFormats] = React.useState(() => []);
-  const [daySelected, setDaySelected] = React.useState(true);
+  const [selectedFromTime, setSelectedFromTime] = React.useState(null)
+  const [selectedToTime, setSelectedToTime] = React.useState(null)
+  const [openInfo, setOpenInfo] = React.useState(false)
+  const [openReset, setOpenReset] = React.useState(false)
+  const [openSave, setOpenSave] = React.useState(false)
+  const [formats, setFormats] = React.useState(() => [])
+  const [daySelected, setDaySelected] = React.useState(true)
   const weekArray = moment.weekdays(true)
 
   const handleFromTimeChange = (time) => {
     const value = selectedToTime && time > selectedToTime ? '' : time
     setSelectedFromTime(value)
-  };
+  }
+
   const handleToTimeChange = (time) => {
     const validatedTime = selectedFromTime && time < selectedFromTime ? '' : time
-    setSelectedToTime(validatedTime);
-  };
+    setSelectedToTime(validatedTime)
+  }
+
   const onCancel = () => {
     setOpenInfo(false)
     setOpenReset(false)
     setOpenSave(false)
   }
+
   const onResetAgree = () => {
     setOpenReset(false)
     setSelectedFromTime(null)
     setSelectedToTime(null)
     setFormats([])
   }
+
   const onSaveAgree = () => {
     setOpenSave(false)
     const l1 = formats.map((x) => weekArray[x])
     console.log(l1, selectedFromTime, selectedToTime, localStorage.getItem('i18nextLng'))
   }
+
   const handleInfoOpen = () => {
     setOpenInfo(true)
   }
+
   const handleResetOpen = () => {
     setOpenReset(true)
   }
+
   const handleSaveOpen = () => {
     if (!selectedFromTime) setSelectedFromTime('')
     if (!selectedToTime) setSelectedToTime('')
@@ -79,10 +86,12 @@ const Config = ({ t }) => {
       && formats.length > 0
     ) setOpenSave(true)
   }
+
   const handleFormat = (event, newVal) => {
     setDaySelected(true)
     setFormats(newVal)
   }
+
   const enableAMPM = localStorage.getItem('i18nextLng') !== 'de'
 
   return (
@@ -97,7 +106,7 @@ const Config = ({ t }) => {
           <CardContent>
             <div style={{
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
             }}>
               <Typography variant="h4">{t('page.config.info')}</Typography>
               <HelpOutlineIcon onClick={handleInfoOpen}/>
@@ -109,7 +118,7 @@ const Config = ({ t }) => {
                   weekArray.map((val, index) => {
                     return (
                       <ToggleButton key={val} value={index} aria-label="italic" style={{ color: daySelected ? 'rgba(0, 0, 0, 0.38)' : 'red' }}>
-                        { val.substring(0, 3) }
+                        {val.substring(0, 3)}
                       </ToggleButton>
                     )
                   })
@@ -125,7 +134,7 @@ const Config = ({ t }) => {
                 KeyboardButtonProps={{
                   'aria-label': 'change time',
                 }}
-                keyboardIcon={<AccessTimeIcon />}
+                keyboardIcon={<AccessTimeIcon/>}
                 emptyLabel="HH:mm"
                 ampm={enableAMPM}
                 invalidDateMessage={t('page.config.releaseFromError')}
@@ -142,7 +151,7 @@ const Config = ({ t }) => {
                 KeyboardButtonProps={{
                   'aria-label': 'change time',
                 }}
-                keyboardIcon={<AccessTimeIcon />}
+                keyboardIcon={<AccessTimeIcon/>}
                 emptyLabel="HH:mm"
                 ampm={enableAMPM}
                 invalidDateMessage={t('page.config.releaseToError')}
@@ -169,7 +178,7 @@ const Config = ({ t }) => {
 }
 
 Config.propTypes = {
-  t: PropTypes.any
+  t: PropTypes.any,
 }
 
 export default withTranslation()(Config)

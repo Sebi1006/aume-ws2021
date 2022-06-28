@@ -22,7 +22,7 @@ const isLocalhost = Boolean(
 )
 
 export async function register (config) {
-   //if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  //if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
   if ('serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href)
@@ -45,14 +45,15 @@ export async function register (config) {
 
         navigator.serviceWorker.ready.then(
           () => {
-            Notification.requestPermission().then((per) => {
-              if (per === "granted") {
-                console.log("Notification permission granted")
-              }
-            })
-          }
+            Notification.requestPermission()
+              .then((per) => {
+                if (per === 'granted') {
+                  console.log('Notification permission granted')
+                }
+              })
+          },
         )
-        .catch(error => console.log(error))
+          .catch(error => console.log(error))
       } else {
         // Is not localhost. Just register service worker
         registerValidSW(swUrl, config)
@@ -91,13 +92,13 @@ function registerValidSW (swUrl, config) {
               // "Content is cached for offline use." message.
               console.log('Content is cached for offline use.')
 
-              if(process.env.NODE_ENV === 'production') {
+              if (process.env.NODE_ENV === 'production') {
                 installingWorker.postMessage({
                   action: 'backgroundSync',
                   url: `${process.env.REACT_APP_API_WS_URL}`,
-                  control: 'true'
-                });
-                localStorage.setItem('backgroundSync', 'true');
+                  control: 'true',
+                })
+                localStorage.setItem('backgroundSync', 'true')
               }
 
               // Execute callback

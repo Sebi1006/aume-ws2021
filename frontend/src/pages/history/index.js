@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import SwipeableViews from 'react-swipeable-views'
 import { Container, makeStyles, useTheme } from '@material-ui/core'
-import Page from 'src/components/Page'
+import Page from 'src/components/page'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -10,12 +10,12 @@ import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import MomentUtils from '@date-io/moment'
-import { withTranslation } from 'react-i18next';
-import WeekPicker from '../../components/WeekPicker'
-import DayView from './chartviews/DayView'
-import WeekView from './chartviews/WeekView'
-import MonthView from './chartviews/MonthView'
-import YearView from './chartviews/YearView'
+import { withTranslation } from 'react-i18next'
+import WeekPicker from '../../components/weekPicker'
+import DayView from './chartViews/dayView'
+import WeekView from './chartViews/weekView'
+import MonthView from './chartViews/monthView'
+import YearView from './chartViews/yearView'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,8 +26,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+function TabPanel (props) {
+  const { children, value, index, ...other } = props
 
   return (
     <div
@@ -43,35 +43,35 @@ function TabPanel(props) {
         </Box>
       )}
     </div>
-  );
+  )
 }
 
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
-};
+}
 
-function a11yProps(index) {
+function a11yProps (index) {
   return {
     id: `full-width-tab-${index}`,
     'aria-controls': `full-width-tabpanel-${index}`,
-  };
+  }
 }
 
 const History = ({ t }) => {
   const classes = useStyles()
-  const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+  const theme = useTheme()
+  const [value, setValue] = React.useState(0)
   const [selectedDate, handleDateChange] = useState(new Date())
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+    setValue(newValue)
+  }
 
   const handleChangeIndex = (index) => {
-    setValue(index);
-  };
+    setValue(index)
+  }
 
   return (
     <Page
@@ -100,21 +100,21 @@ const History = ({ t }) => {
             onChangeIndex={handleChangeIndex}
           >
             <TabPanel value={value} index={0} dir={theme.direction}>
-              <MuiPickersUtilsProvider utils={MomentUtils} >
+              <MuiPickersUtilsProvider utils={MomentUtils}>
                 <KeyboardDatePicker
                   variant="inline"
                   inputVariant="outlined"
                   label="Pick a date"
                   value={selectedDate}
-                  onChange={handleDateChange} />
+                  onChange={handleDateChange}/>
               </MuiPickersUtilsProvider>
-              <DayView />
+              <DayView/>
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction}>
               <MuiPickersUtilsProvider utils={MomentUtils}>
-                <WeekPicker />
+                <WeekPicker/>
               </MuiPickersUtilsProvider>
-              <WeekView />
+              <WeekView/>
             </TabPanel>
             <TabPanel value={value} index={2} dir={theme.direction}>
               <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -125,9 +125,9 @@ const History = ({ t }) => {
                   inputVariant="outlined"
                   label="Pick a date"
                   value={selectedDate}
-                  onChange={handleDateChange} />
+                  onChange={handleDateChange}/>
               </MuiPickersUtilsProvider>
-              <MonthView />
+              <MonthView/>
             </TabPanel>
             <TabPanel value={value} index={3} dir={theme.direction}>
               <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -137,9 +137,9 @@ const History = ({ t }) => {
                   inputVariant="outlined"
                   label="Pick a date"
                   value={selectedDate}
-                  onChange={handleDateChange} />
+                  onChange={handleDateChange}/>
               </MuiPickersUtilsProvider>
-              <YearView />
+              <YearView/>
             </TabPanel>
           </SwipeableViews>
         </div>
@@ -149,7 +149,7 @@ const History = ({ t }) => {
 }
 
 History.propTypes = {
-  t: PropTypes.any
+  t: PropTypes.any,
 }
 
 export default withTranslation()(History)

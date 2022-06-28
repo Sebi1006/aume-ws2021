@@ -15,6 +15,7 @@ exports.handler = async event => {
     let connectionData;
     console.info('sendMessage invoked:' + event.body)
     console.info('sendMessage invoked:' + event.requestContext.domainName + '/' + event.requestContext.stage)
+
     try {
         connectionData = await ddb.scan({
             TableName: WS_CONNECTION_TABLE,
@@ -36,6 +37,7 @@ exports.handler = async event => {
     let userId = {}
     let chargingPoint = {}
     const {action} = postData
+
     switch (action) {
         case `chargingpoint`:
             chargingPoint = postData.chargingPoint
@@ -134,7 +136,6 @@ exports.handler = async event => {
                     return i.connectionId === event.requestContext.connectionId;
                 })[0].uid;
             }
-            //const clientId = chargingPoint.split("#")[0];
             dbItems = await ddb.query({
                 TableName: CHARGING_POINT_STATUS_TABLE,
                 KeyConditionExpression: 'clientId = :clientId',
@@ -143,11 +144,6 @@ exports.handler = async event => {
                 },
                 ScanIndexForward: false
             }).promise()
-            // .then(function(items) {
-            //     return items.Items.filter(function(i) {
-            //         return i.uid === chargingPoint;
-            //     });
-            // })
             response = JSON.stringify({"chargingStatus": dbItems.Items[0]})
             break;
         default:

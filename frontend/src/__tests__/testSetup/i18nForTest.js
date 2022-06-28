@@ -1,6 +1,6 @@
 /* istanbul ignore file */
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import i18n from 'i18next'
+import { initReactI18next } from 'react-i18next'
 
 i18n
   .use(initReactI18next)
@@ -8,13 +8,13 @@ i18n
     lng: 'en',
     fallbackLng: 'en',
     interpolation: {
-      escapeValue: false
+      escapeValue: false,
     },
     react: {
       wait: true,
       useSuspense: false,
     },
     resources: { en: { translations: {} } },
-  });
+  })
 
-export default i18n;
+export default i18n

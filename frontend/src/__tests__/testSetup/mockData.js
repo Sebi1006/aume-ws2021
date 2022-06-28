@@ -8,12 +8,12 @@ export const ChargeCyclesMock = () => {
       ended: '2020-10-23T12:09:30.056Z',
       chargedWork: {
         v: 5.5,
-        uom: 'kWh'
+        uom: 'kWh',
       },
       power: {
         v: 0.0,
-        uom: 'kW'
-      }
+        uom: 'kW',
+      },
     },
     {
       id: 'f209490a-1838-11eb-adc1-0242ac110002',
@@ -23,12 +23,12 @@ export const ChargeCyclesMock = () => {
       ended: '2020-10-22T12:09:30.056Z',
       chargedWork: {
         v: 12.5,
-        uom: 'kWh'
+        uom: 'kWh',
       },
       power: {
         v: 0.0,
-        uom: 'kW'
-      }
+        uom: 'kW',
+      },
     },
     {
       id: 'f209490a-1838-11eb-adc1-0242ac100002',
@@ -38,15 +38,15 @@ export const ChargeCyclesMock = () => {
       ended: '2020-10-21T16:09:30.056Z',
       chargedWork: {
         v: 11.5,
-        uom: 'kWh'
+        uom: 'kWh',
       },
       power: {
         v: 0.0,
-        uom: 'kW'
-      }
-    }
+        uom: 'kW',
+      },
+    },
   ]
-};
+}
 
 export const CurrentChargeCyclesMock = (v) => {
   return [
@@ -58,15 +58,15 @@ export const CurrentChargeCyclesMock = (v) => {
       ended: '2020-10-23T12:09:30.056Z',
       chargedWork: {
         v,
-        uom: 'kWh'
+        uom: 'kWh',
       },
       power: {
         v: 0.0,
-        uom: 'kW'
-      }
+        uom: 'kW',
+      },
     },
   ]
-};
+}
 
 export const CarMock = () => {
   return {
@@ -78,12 +78,12 @@ export const CarMock = () => {
         range:
           {
             best: {
-              combined: 195
+              combined: 195,
             },
             worst: {
-              combined: 145
-            }
-          }
-      }
+              combined: 145,
+            },
+          },
+      },
   }
-};
+}

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Container, Grid, makeStyles } from '@material-ui/core'
-import Page from 'src/components/Page'
+import Page from 'src/components/page'
 import { useTranslation } from 'react-i18next'
-import UserProfileCar from './UserProfileCar'
+import UserProfileCar from './userProfileCar'
 
 const useStyles = makeStyles((theme) => ({
   root: {

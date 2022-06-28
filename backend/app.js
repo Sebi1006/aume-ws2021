@@ -8,31 +8,9 @@ const server = app.listen(port, () => {
 })
 const socketFunctions = require('./controller/socketFunctions')
 
-/*
-app.use(function (req, res, next) {
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    next()
-})
-
-
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
-app.get('/api/charge-cycles', (req, res) => {
-    res.send(restFunctions.chargeCycles())
-})
-
-app.get('/api/current-charge-cycle', (req, res) => {
-    res.send(restFunctions.currentChargeCycle())
-})
-
-app.get('/api/profile', (req, res) => {
-    res.send(restFunctions.profile())
-})
-*/
-
-//handles incoming messages
+// handles incoming messages
 const wsServer = new ws.Server({noServer: true});
+
 wsServer.on('connection', socket => {
     console.log('Connection detected')
     socket.on('message', message => {
@@ -75,23 +53,20 @@ wsServer.on('connection', socket => {
                         console.log('No valid action detected!')
                 }
             } catch {
-                console.log('invalid Data')
+                console.log('Invalid data')
             }
         }
     )
 })
 
-/** sends data to all connected clients**/
+// sends data to all connected clients
 function sendTestData() {
     const rnd = Math.floor(Math.random() * 5)
-    //modify response to your needs
     const response = socketFunctions.chargingStatus("111", rnd)
     wsServer.clients.forEach(n => n.send(JSON.stringify(response)))
 }
 
-/** uncomment setInterval if you want to send a message in a fixed interval to all clients**/
 setInterval(sendTestData, 5000)
-
 
 server.on('upgrade', (request, socket, head) => {
     wsServer.handleUpgrade(request, socket, head, socket => {

@@ -11,7 +11,7 @@ import MuiAlert from '@material-ui/lab/Alert'
 import { CognitoUser, AuthenticationDetails } from 'amazon-cognito-identity-js'
 import PropTypes from 'prop-types'
 import { withTranslation } from 'react-i18next'
-import UserPool from '../../Login/UserPool'
+import UserPool from '../../login/userPool'
 
 function Copyright () {
   return (
@@ -93,10 +93,10 @@ const SignIn = ({ t }) => {
           action: 'jwtHeader',
           url: `${process.env.REACT_APP_API_WS_URL}`,
           jwt: localStorage.getItem('accessToken'),
-          chargingPoint: localStorage.getItem('chargingPoint')
-        });
+          chargingPoint: localStorage.getItem('chargingPoint'),
+        })
       })
-  };
+  }
 
   const handleChange = (event) => {
     event.preventDefault()
@@ -113,6 +113,7 @@ const SignIn = ({ t }) => {
         break
     }
   }
+
   const handleSubmit = () => {
     const errorMSGEmail = emailValidation(email)
     const errorMSGPassword = passwordValidation(password)
@@ -130,48 +131,51 @@ const SignIn = ({ t }) => {
     const user = new CognitoUser({
       Username: email,
       Pool: UserPool,
-    });
+    })
 
     const authDetails = new AuthenticationDetails({
       Username: email,
       Password: password,
-    });
+    })
 
     user.authenticateUser(authDetails, {
       onSuccess: (data) => {
-        localStorage.setItem('accessToken', data.getIdToken().getJwtToken());
+        localStorage.setItem('accessToken', data.getIdToken()
+          .getJwtToken())
         localStorage.setItem('chargingPoint', data.getIdToken().payload['custom:ChargingPointID'].split('#')[0])
         localStorage.setItem('userID', data.getIdToken().payload['custom:ChargingPointID'].split('#')[1])
         handleServiceWorker()
-        document.location.href = '/';
+        document.location.href = '/'
       },
       onFailure: (err) => {
-        console.log('Error');
-        console.log(err);
+        console.log('Error')
+        console.log(err)
         setError(true)
         setErrorMSG(err.message)
       },
       newPasswordRequired: (userAttributes, requiredAttributes) => {
-        console.log('newPasswordRequired');
-        console.log(userAttributes);
+        console.log('newPasswordRequired')
+        console.log(userAttributes)
         user.completeNewPasswordChallenge('Start123!', requiredAttributes, {
           onSuccess: (result) => {
             console.log(result)
           },
           onFailure: (err) => {
             console.log(err)
-          }
-        });
+          },
+        })
       },
     })
 
-    console.log('Send login request to backend!');
+    console.log('Send login request to backend!')
   }
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      handleSubmit();
+      handleSubmit()
     }
   }
+
   return (
     <Grid container component="main" className={classes.root}>
       <Grid style={{ margin: 'auto' }} item xs={12} sm={8} md={5} component={Paper} elevation={24}>

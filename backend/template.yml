@@ -69,7 +69,7 @@ Resources:
           CHARGING_POINT_STATUS_TABLE: !Ref ChargingPointStatusTableName
           WS_CONNECTION:
             !Join [
-              "",
+                "",
               [
                 !Ref TEAM1WebSocket,
                 ".execute-api.",
@@ -428,14 +428,14 @@ Outputs:
     Description: "API Gateway endpoint URL for Prod stage"
     Value:
       !Join [
-        "",
+          "",
         [
-          "https://",
-          !Ref Team1API,
-          ".execute-api.",
-          !Ref "AWS::Region",
-          ".amazonaws.com/",
-          !Ref "Stage",
+            "https://",
+            !Ref Team1API,
+            ".execute-api.",
+            !Ref "AWS::Region",
+            ".amazonaws.com/",
+            !Ref "Stage",
         ],
       ]
   ConnectionsTableArn:
@@ -458,13 +458,13 @@ Outputs:
     Description: "The WSS Protocol URI to connect to"
     Value:
       !Join [
-        "",
+          "",
         [
-          "wss://",
-          !Ref TEAM1WebSocket,
-          ".execute-api.",
-          !Ref "AWS::Region",
-          ".amazonaws.com/",
-          !Ref "Stage",
+            "wss://",
+            !Ref TEAM1WebSocket,
+            ".execute-api.",
+            !Ref "AWS::Region",
+            ".amazonaws.com/",
+            !Ref "Stage",
         ],
       ]

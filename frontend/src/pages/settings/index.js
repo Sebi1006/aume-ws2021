@@ -1,10 +1,10 @@
 import React from 'react'
 import { Container, makeStyles } from '@material-ui/core'
-import Page from 'src/components/Page'
+import Page from 'src/components/page'
 import Grid from '@material-ui/core/Grid'
-import LanguageSelector from './LanguageSelector'
-import PushNotifications from './PushNotifications'
-import ChargingAuthorization from './ChargingAuthorization'
+import LanguageSelector from './languageSelector'
+import PushNotifications from './pushNotifications'
+import ChargingAuthorization from './chargingAuthorization'
 
 const useStyles = makeStyles((theme) => ({
   root: {
