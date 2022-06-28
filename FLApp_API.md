@@ -5,7 +5,7 @@ Query always for a specific charge point.
 - State of the current charging process:
     - Start time
     - End time
-    - State (plugged in, charging, connected, charged, unplugged)
+    - State (plugged in, charging, available, charged, unplugged)
     - Charged (KWh)
     - Current power (KW)
 
